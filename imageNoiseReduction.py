@@ -6,13 +6,13 @@ import glob #for getting list of files in a directory
 import os #for file paths
 
 
-#converts arrays into image compatible form then exports it as image
+#converts arrays into image compatible form then exports it as image with a specified file name
 def export(array, string):
         img = PIL.Image.fromarray(array.astype(np.uint8))
-        img.save(fileName)
+        img.save(string)
 
 
-# stacks the images into a single array and then divides them by the number of images to average them.
+# stacks the a list of images into a single array and then divides them by the number of images to average them.
 def stack(list):
      return (np.add.reduce(np.array(list).astype(np.uint16))/len(list))
      
