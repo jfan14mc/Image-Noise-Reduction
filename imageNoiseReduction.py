@@ -5,6 +5,11 @@ from PIL import Image
 import glob #for getting list of files in a directory
 import os #for file paths
 
+#exports the image with a tag that denotes if it had static subtraction
+def imageExport(array, string):
+        img = PIL.Image.fromarray(array.astype(np.uint8))
+        img.save(fileName)
+
 # /Users/fanjx1/Documents/Sand Images/Anthracite-Dry
 # Category folder to be searched through
 path = input('Enter the category folder path (format is ...Sand Images/MaterialName-Liquid):')
@@ -19,11 +24,30 @@ for wavelength in next(os.walk(path))[1]:
     for picture in glob.glob(wave_dir + '/*'):
         pictures.append(np.array(PIL.Image.open(picture)).astype(np.uint16))
 
-    
+    # Setting up the file pathing to for result files
+    pre_path = os.path.join(os.path.dirname(path) , 'Composites', os.path.basename(path), wavelength)
+
+    #finds all images in the folder, then stacks and averages files w/ type conversion to prevent overflows
     imageArrays = [picture for picture in pictures if (picture.sum()/picture.size) > 10]
-    count = len(imageArrays)
-    print((np.add.reduce(np.array(imageArrays))/count).astype(np.uint8))
-    print(wave_dir, 'images')
+    imageStack = (np.add.reduce(np.array(imageArrays).astype(np.uint16))/len(imageArrays))
+    #print(wave_dir, 'images')
+
+    #finds all static images in the folder, then stacks and averages files w/ conversions to prevent overflows
+    staticArrays = [picture for picture in pictures if (picture.sum()/picture.size) < 10]
+    if len(staticArrays) > 0:
+        staticStack = (np.add.reduce(np.array(staticArrays).astype(np.uint16))/len(staticArrays))
+        resultStack = imageStack - staticStack
+        fileName = pre_path + '-.png'
+        imageExport(resultStack, fileName)
+    else:
+         fileName = pre_path + '.png'
+         imageExport(imageStack, fileName)
+
+    print(fileName)
+        
+    
+
+
 
     # # Stacking and counting the pictures. Pictures are filtered by their higher average brightness than static images
     # for image in pictures:   
