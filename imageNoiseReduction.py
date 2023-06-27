@@ -25,7 +25,7 @@ for wavelength in next(os.walk(path))[1]:
     wave_dir = os.path.join(path, wavelength)
 
     # Setting up the file pathing to for result files, Wet Sand(dirname)/Composites/MaterialType-Condition(basename)/wavelength
-    pre_path = os.path.join(os.path.dirname(path), 'Composites', os.path.basename(path), wavelength)
+    pre_path = os.path.join(os.path.dirname(path), 'Composites', wavelength)
     
     # Prepares a list for the pictures to be stored in and then unloads all the pictures in an image folder into it
     pictures = []
@@ -43,10 +43,10 @@ for wavelength in next(os.walk(path))[1]:
     if len(staticArrays) > 0:
         staticStack = stack(staticArrays)
         resultStack = imageStack - staticStack
-        fileName = pre_path + '-.png' 
+        fileName = pre_path + '-.tiff' 
         export(resultStack, fileName)
     else:
-         fileName = pre_path + '.png'
+         fileName = pre_path + '.tiff'
          export(imageStack, fileName)
 
     print(fileName)
